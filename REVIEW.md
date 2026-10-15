@@ -1,19 +1,19 @@
 # REVIEW.md
 
-## Defects and fixes
+## Behaviors Reviewed and Fixes Applied
 
-| # | Where | What is wrong | How to notice | How fixed |
+| # | Where | Requirement or Behavior | How to Verify | Implementation |
 |---|---|---|---|---|
-| 1 | Time helper: `compute_late_minutes` | Late minutes must be measured from shift start, with a strict 10-minute grace period. | Test exactly 10 minutes late and one second beyond the grace period. | Apply the strict threshold and calculate whole minutes from shift start. |
-| 2 | Time helper: `compute_work_hours` | Standard rounding can produce incorrect results for half-up rounding requirements. | Test a duration that rounds to a half-up boundary. | Use `Decimal` with `ROUND_HALF_UP` to two decimal places. |
-| 3 | Time helper: `compute_overtime` | Overnight shifts require the shift end to fall on the following calendar day. | Test an overnight shift at and below the 30-minute threshold. | Adjust the shift-end date for overnight shifts and apply the minimum threshold. |
-| 4 | Attendance date helper: `attendance_date_for` | Early-morning punches for overnight shifts must belong to the previous shift date when they occur before shift end. | Test punches immediately before and at shift end. | Apply the overnight-shift date rule. |
+| 1 | `compute_late_minutes` | Enforce a strict 10-minute grace period and calculate late minutes relative to the scheduled shift start. | Test an arrival exactly 10 minutes late and an arrival just beyond the grace period. | Apply the strict threshold and calculate whole late minutes from the scheduled shift start. |
+| 2 | `compute_work_hours` | Round calculated work hours using the required half-up rounding rule. | Test a duration that produces a half-up rounding boundary. | Use `Decimal` with `ROUND_HALF_UP` to round work hours to two decimal places. |
+| 3 | `compute_overtime` | Handle overnight shifts correctly and apply the 30-minute overtime threshold. | Test overtime below, exactly at, and above 30 minutes, including an overnight shift. | Adjust the shift-end date when necessary and apply the required threshold. |
+| 4 | `attendance_date_for` | Associate early-morning punches with the correct attendance date for overnight shifts. | Test punches immediately before and at the overnight shift-end time. | Apply the overnight-shift attendance-date rule. |
 
-## Other checks
+## Validation
 
-- Verified pagination, filters, and the maximum page size.
-- Verified attendance punch-in, punch-out, and manual correction history.
-- Verified aggregation-based analytics and explain plans.
-- Ran the helper tests successfully: 9 passed.
+- Verified attendance filtering, pagination, and the maximum page size.
+- Tested punch-in, punch-out, and manual attendance correction history.
+- Reviewed aggregation-based analytics and MongoDB explain plans.
+- Ran the helper test suite successfully: 9 tests passed.
 
-These entries describe the behaviors addressed and tested in the implementation. Confirm each against the original starter before treating it as a defect that existed in the starter.
+The entries above describe implementation behaviors and validation performed. They are not claims that the same issues existed in the original starter unless confirmed by comparison with that code.
